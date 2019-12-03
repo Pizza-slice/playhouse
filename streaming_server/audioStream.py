@@ -1,4 +1,5 @@
 import wave
+import pyaudio
 
 
 class AudioSteam:
@@ -17,8 +18,17 @@ class AudioSteam:
 
 
 def main():
-    a = AudioSteam("C:\\Users\\User\Downloads\\purple-haze.wav")
-    print(a.file.getframerate())
+    p = pyaudio.PyAudio()
+    a = AudioSteam("C:\\Users\\User\Downloads\\who-says.wav")
+    stream = p.open(format=p.get_format_from_width(a.file.getsampwidth()),
+                    channels=a.file.getnchannels(),
+                    rate=a.file.getframerate(),
+                    output=True)
+    data = a.get_next_frame()
+    stream.write(data)
+    while len(data) > 0:
+        data = a.get_next_frame()
+        stream.write(data)
 
 
 if __name__ == '__main__':
