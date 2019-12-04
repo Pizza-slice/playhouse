@@ -3,7 +3,7 @@ import pyaudio
 
 
 class AudioSteam:
-    CHUNK = 8800
+    CHUNK = 1024
 
     def __init__(self, filename):
         self.file = wave.open(filename)

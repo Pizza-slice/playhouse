@@ -20,7 +20,7 @@ class StreamClient:
         self.send_setup_packet()
 
     def send_setup_packet(self):
-        filename = "C:\\Users\\User\\Downloads\\LittleWing.wav"
+        filename = "C:\\Users\\User\\Downloads\\HereComesTheSun.wav"
         setup_packet = "SETUP " + filename + "\n" + str(
             self.get_transmission_seq()) + "\n" + "UDP " + str(self.stream_port)
         self.transmission_socket.send(setup_packet.encode())
@@ -34,12 +34,12 @@ class StreamClient:
         stream_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         stream_socket.bind(("127.0.0.1", self.stream_port))  # todo change the server address to be dynamic
         threading.Thread(target=self.play_stream).start()
-        data, addr = stream_socket.recvfrom(8800 * 4)
+        data, addr = stream_socket.recvfrom(1024 * 4)
         self.lock.acquire()
         self.frame_list.append(data)
         self.lock.release()
         while data != "done".encode():
-            data, addr = stream_socket.recvfrom(8800 * 4)
+            data, addr = stream_socket.recvfrom(1024 * 4)
             self.lock.acquire()
             self.frame_list.append(data)
             self.lock.release()
@@ -47,19 +47,18 @@ class StreamClient:
 
     def play_stream(self):
         p = pyaudio.PyAudio()
-        wf = wave.open("C:\\Users\\User\\Downloads\\LittleWing.wav", 'rb')
+        wf = wave.open("C:\\Users\\User\\Downloads\\HereComesTheSun.wav", 'rb')
+        print(wf.getframerate())
         stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                         channels=wf.getnchannels(),
                         rate=wf.getframerate(),
                         output=True)
         while True:
-            self.lock.acquire()
-            frame_list_length = len(self.frame_list)
-            self.lock.release()
-            for i in range(frame_list_length):
+            if self.frame_list:
                 self.lock.acquire()
                 stream.write(self.frame_list.pop(0))
                 self.lock.release()
+
 
 def main():
     c = StreamClient()
