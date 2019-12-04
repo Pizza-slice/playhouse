@@ -26,11 +26,10 @@ class ServerWorker(threading.Thread):
         client_address = ("127.0.0.1", int(stream_port))
         sound_data = self.client_info["audioStream"].get_next_frame()
         stream_socket.sendto(sound_data, client_address)
-        time.sleep(0.1)
         while len(sound_data) > 0:
+            time.sleep(0.2)
             sound_data = self.client_info["audioStream"].get_next_frame()
             stream_socket.sendto(sound_data, client_address)
-            time.sleep(0.1)
         print("done")
         time.sleep(0.1)
         stream_socket.sendto("done".encode(), client_address)
