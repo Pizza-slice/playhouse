@@ -1,15 +1,14 @@
 import socket
-import pyaudio
 import threading
+import pyaudio
 import wave
-
 
 class StreamClient:
     def __init__(self):
         self.transmission_socket = socket.socket()
         self.transmission_socket.connect(("127.0.0.1", 1902))
         self.transmission_seq = 0
-        self.stram_port = 4500
+        self.stream_port = 4501
         self.lock = threading.Lock()
         self.frame_list = []
         self.done = False
@@ -19,9 +18,9 @@ class StreamClient:
         self.send_setup_packet()
 
     def send_setup_packet(self):
-        filename = "C:\\Users\\User\Downloads\\LittleWing.wav"
+        filename = "D:\\Donwloads\\document\\LittleWing.wav"
         setup_packet = "SETUP " + filename + "\n" + str(
-            self.get_transmission_seq()) + "\n" + "UDP " + str(self.stram_port)
+            self.get_transmission_seq()) + "\n" + "UDP " + str(self.stream_port)
         self.transmission_socket.send(setup_packet.encode())
         threading.Thread(target=self.open_stream).start()
 
@@ -30,28 +29,28 @@ class StreamClient:
         return self.transmission_seq - 1
 
     def open_stream(self):
-        stream_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        stream_socket.bind(("127.0.0.1", self.stram_port))  # todo change the server address to be dynamic
-        threading.Thread(target=self.read_frame)
-        data, addr = stream_socket.recvfrom(1024 * 2 * 2)
-        self.frame_list.append(data)
-        while data != "done".encode():
-            data, addr = stream_socket.recvfrom(1024 * 2 * 2)
-            self.frame_list.append(data)
-
-    def read_frame(self):
         p = pyaudio.PyAudio()
-        wf = wave.open("C:\\Users\\User\Downloads\\LittleWing.wav", 'rb')
+        wf = wave.open("D:\\Donwloads\\document\\LittleWing.wav", 'rb')
         stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                         channels=wf.getnchannels(),
                         rate=wf.getframerate(),
                         output=True)
-        while not self.done:
-            for i in range(len(self.frame_list)):
-                stream.write(self.frame_list.pop(i))
-        while len(self.frame_list) > 0:
-            for i in range(len(self.frame_list)):
-                stream.write(self.frame_list.pop(i))
+        stream_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        stream_socket.bind(("127.0.0.1", self.stream_port))  # todo change the server address to be dynamic
+        data, addr = stream_socket.recvfrom(1024*4)
+        self.frame_list.append(data)
+        while data != "done".encode():
+            data, addr = stream_socket.recvfrom(1024 * 4)
+            self.frame_list.append(data)
+        print("done")
+        stream.write(b"".join(self.frame_list))
+        stream.stop_stream()
+        stream.close()
+
+        # close PyAudio (5)
+        p.terminate()
+        stream_socket.close()
+
 
 
 def main():
