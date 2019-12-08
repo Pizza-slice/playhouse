@@ -47,7 +47,7 @@ class StreamClient:
 
     def play_stream(self):
         p = pyaudio.PyAudio()
-        wf = wave.open("C:\\Users\\User\\Downloads\\HereComesTheSun.wav", 'rb')
+        wf = wave.open("..\\file\\my_sweet_lord", 'rb')
         print(wf.getframerate())
         stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                         channels=wf.getnchannels(),
