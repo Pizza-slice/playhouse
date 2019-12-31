@@ -9,9 +9,9 @@ class AudioSteam:
         self.file = wave.open(filename)
         self.frame_num = 0
 
-    def get_next_frame(self):
+    def get_next_frame(self, chuck=CHUNK):
         self.frame_num += 1
-        return self.file.readframes(self.CHUNK)
+        return self.file.readframes(chuck)
 
     def get_frames(self):
         return self.file.getnframes()
