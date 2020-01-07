@@ -19,7 +19,6 @@ class StreamClient:
         self.teardown = False
         self.is_pause = False
 
-
     def main_choise(self):
         while True:
             inputa = input("please enter stuff")
@@ -52,7 +51,7 @@ class StreamClient:
         self.transmission_socket.send(pause_packet.encode())
 
     def send_setup_packet(self):
-        filename = "..\\files\\my_sweet_lord.wav"
+        filename = "..\\music_files\\1asod113.wav"
         setup_packet = "SETUP " + filename + "\n" + str(
             self.get_transmission_seq()) + "\n" + "UDP " + str(self.stream_port)
         self.transmission_socket.send(setup_packet.encode())
@@ -80,7 +79,7 @@ class StreamClient:
 
     def play_stream(self):
         p = pyaudio.PyAudio()
-        wf = wave.open("..\\files\\my_sweet_lord.wav", 'rb')
+        wf = wave.open("..\\music_files\\1asod113.wav", 'rb')
         print(wf.getframerate())
         stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                         channels=wf.getnchannels(),
