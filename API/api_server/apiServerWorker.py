@@ -21,42 +21,60 @@ class ServerWorker(threading.Thread):
 
     def run(self):
         request = self.recv_json_request()
-        print(request)
         if self.check_data(request):
             if request["endpoint"] == "search":
-                if request["type"] == "song":
-                    song_id_list = self.get_song_id_list_by_name(request["q"])
-                    self.send_json_response({"result": song_id_list})
-                if request["type"] == "artist":
-                    artist_id_list = self.get_artist_id_list_by_name(request["q"])
-                    self.send_json_response({"result": artist_id_list})
-                if request["type"] == "album":
-                    album_id_list = self.get_album_id_list_by_name(request["q"])
-                    self.send_json_response({"result": album_id_list})
-            if request["endpoint"] == "song":
-                self.send_json_response({"song": self.get_song_by_id(request["song_id"])})
-            if request["endpoint"] == "artist":
-                self.send_json_response({"artist": self.get_artist_by_id(request["artist_id"])})
-            if request["endpoint"] == "album":
-                self.send_json_response({"album": self.get_album_by_id(request["album_id"])})
+                self.handle_search(request)
+            if request["endpoint"] == "info":
+                self.handle_info(request)
+
+    def handle_info(self, request):
+        """
+        handle the search query
+        :param request:
+        :type request: dict
+        :return:
+        """
+        if request["type"] == "song":
+            self.send_json_response({"song": self.get_song_by_id(request["song_id"])})
+        if request["type"] == "artist":
+            self.send_json_response({"artist": self.get_artist_by_id(request["artist_id"])})
+        if request["type"] == "album":
+            self.send_json_response({"album": self.get_album_by_id(request["album_id"])})
+
+    def handle_search(self, request):
+        """
+        handle the search query
+        :param request:
+        :type request: dict
+        :return:
+        """
+        if request["type"] == "song":
+            song_id_list = self.get_song_id_list_by_name(request["q"])
+            self.send_json_response({"result": song_id_list})
+        if request["type"] == "artist":
+            artist_id_list = self.get_artist_id_list_by_name(request["q"])
+            self.send_json_response({"result": artist_id_list})
+        if request["type"] == "album":
+            album_id_list = self.get_album_id_list_by_name(request["q"])
+            self.send_json_response({"result": album_id_list})
 
     def get_album_by_id(self, album_id):
-        if os.path.exists(self.ALBUM_DIR + "\\" + album_id+".json"):
-            with open(self.ALBUM_DIR + "\\" + album_id+".json") as f:
+        if os.path.exists(self.ALBUM_DIR + "\\" + album_id + ".json"):
+            with open(self.ALBUM_DIR + "\\" + album_id + ".json") as f:
                 return json.loads(f.read())
         else:
             return {"error": "not found", "code": "404"}
 
     def get_artist_by_id(self, artist_id):
-        if os.path.exists(self.ARTIST_DIR + "\\" + artist_id+".json"):
-            with open(self.ARTIST_DIR + "\\" + artist_id+".json") as f:
+        if os.path.exists(self.ARTIST_DIR + "\\" + artist_id + ".json"):
+            with open(self.ARTIST_DIR + "\\" + artist_id + ".json") as f:
                 return json.loads(f.read())
         else:
             return {"error": "not found", "code": "404"}
 
     def get_song_by_id(self, song_id):
-        if os.path.exists(self.SONG_DIR + "\\" + song_id+".json"):
-            with open(self.SONG_DIR + "\\" + song_id+".json") as f:
+        if os.path.exists(self.SONG_DIR + "\\" + song_id + ".json"):
+            with open(self.SONG_DIR + "\\" + song_id + ".json") as f:
                 return json.loads(f.read())
         else:
             return {"error": "not found", "code": "404"}
@@ -114,13 +132,10 @@ class ServerWorker(threading.Thread):
         :param request:
         :type request: dict
         """
+        info_types = ["song", "album", "artist"]
         keys = request.keys()
         if "endpoint" in keys:
             if request["endpoint"] == "search":
                 return "type" in keys and "q" in keys
-            if request["endpoint"] == "song":
-                return "song_id" in keys
-            if request["endpoint"] == "artist":
-                return "artist_id" in keys
-            if request["endpoint"] == "album":
-                return "album_id" in keys
+            if request["endpoint"] == "info":
+                return request["type"] in info_types

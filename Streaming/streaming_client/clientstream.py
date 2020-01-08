@@ -84,6 +84,7 @@ class StreamClient:
         stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                         channels=wf.getnchannels(),
                         rate=wf.getframerate(),
+
                         output=True)
         while not self.done:
             if self.frame_list:

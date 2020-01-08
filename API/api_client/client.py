@@ -27,19 +27,19 @@ class Client:
         return json_response
 
     def get_album_by_id(self, album_id):
-        request = {"endpoint": "album", "album_id": album_id}
+        request = {"endpoint": "info", "type": "album", "album_id": album_id}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
         return response["album"]
 
     def get_song_by_id(self, song_id):
-        request = {"endpoint": "song", "song_id": song_id}
+        request = {"endpoint": "info", "type": "song", "song_id": song_id}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
         return response["song"]
 
     def get_artist_by_id(self, artist):
-        request = {"endpoint": "artist", "artist_id": artist}
+        request = {"endpoint": "info", "type": "artist", "artist_id": artist}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
         return response["artist"]
