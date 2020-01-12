@@ -1,0 +1,3 @@
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Release\PlayHouse.Form1.resources
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Release\PlayHouse.Properties.Resources.resources
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Release\PlayHouse.csproj.GenerateResource.cache

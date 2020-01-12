@@ -1,5 +1,6 @@
 import json
 import socket
+import sys
 
 
 class Client:
@@ -63,12 +64,34 @@ class Client:
         return response["result"]
 
 
+class GuiConnector:
+    def __init__(self):
+        self.gui_server_socket = socket.socket()
+        try:
+            self.gui_server_socket.bind(("127.0.0.1", int(sys.argv[1])))
+        except IndexError:
+            raise ValueError("please enter a port")
+        self.gui_server_socket.listen(1)
+        self.gui_socket = self.gui_server_socket.accept()[0]
+
+    def recv_data(self):
+        """
+        get data from the gui socket
+        :return:
+        """
+        return self.gui_socket.recv(1024)
+
+    def send_data(self, massage):
+        """
+        send data to the gui socket
+        :param massage:
+        :type massage: str
+        :return:
+        """
+        self.gui_socket.send(massage.encode())
+
+
 if __name__ == "__main__":
     c = Client()
-    result = c.send_album_query("All Thing Must Pass")
-    for album in result:
-        this_album = c.get_album_by_id(album)
-        print("album", this_album)
-        for song in this_album["song_list"]:
-            print("song", c.get_song_by_id(song))
-        print("artist", c.get_artist_by_id(this_album["artist"]))
+    gui_connector = GuiConnector()
+    print(gui_connector.recv_data())

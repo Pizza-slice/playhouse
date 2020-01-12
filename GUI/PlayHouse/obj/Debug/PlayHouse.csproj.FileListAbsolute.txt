@@ -1,0 +1,4 @@
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csprojAssemblyReference.cache
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Form1.resources
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Properties.Resources.resources
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csproj.GenerateResource.cache
