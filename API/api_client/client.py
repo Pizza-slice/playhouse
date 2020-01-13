@@ -94,4 +94,7 @@ class GuiConnector:
 if __name__ == "__main__":
     c = Client()
     gui_connector = GuiConnector()
+    print("dum")
     print(gui_connector.recv_data())
+    while True:
+        pass

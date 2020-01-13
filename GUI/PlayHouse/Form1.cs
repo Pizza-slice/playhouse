@@ -7,22 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 namespace PlayHouse
 {
     public partial class Form1 : Form
     {
-        private ClientConnection clientConnection;
-        public Form1(ClientConnection clientConnection)
+        private ClientConnection c;
+        public Form1(ClientConnection c)
         {
-            this.clientConnection = clientConnection;
+            this.c = c;
             InitializeComponent();
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            String search_qurey = textBox1.Text;
-            this.clientConnection.Send(search_qurey);
-
+            this.c.Send("test");
         }
     }
 }

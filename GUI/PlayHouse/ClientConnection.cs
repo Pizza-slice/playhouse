@@ -13,8 +13,7 @@ namespace PlayHouse
         public ClientConnection()
         {
             int port = this.StartClient();
-            IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddr = ipHost.AddressList[0];
+            IPAddress ipAddr = IPAddress.Parse("127.0.0.1");
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, port);
             this.ClientSocket = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             this.ClientSocket.Connect(localEndPoint);
@@ -22,12 +21,13 @@ namespace PlayHouse
         int StartClient()
         {
             System.Diagnostics.Process p = new System.Diagnostics.Process();
-            p.StartInfo.FileName = "C:\\cyber\\anaconda3\\python.exe";
-            p.StartInfo.Arguments = this.GenerentePort();
+            p.StartInfo.FileName = "python.exe";
+            String port = this.GenerentePort();
+            p.StartInfo.Arguments = @"C:\projects\playhouse\API\api_client\client.py " + port;
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardOutput = false;
             p.Start();
-            return Convert.ToInt32(p.StartInfo.Arguments);
+            return Convert.ToInt32(port);
         }
         String GenerentePort()
         {
