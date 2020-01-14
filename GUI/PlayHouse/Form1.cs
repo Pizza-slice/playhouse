@@ -12,16 +12,22 @@ namespace PlayHouse
 {
     public partial class Form1 : Form
     {
-        private ClientConnection c;
+        private ClientHandler clientHandler;
         public Form1(ClientConnection c)
         {
-            this.c = c;
+            this.clientHandler = new ClientHandler(c);
             InitializeComponent();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.c.Send("test");
+            
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            Dictionary<String,String> response =  this.clientHandler.SendSearchQuery(textBox1.Text, "album");
+            Console.WriteLine(response);
         }
     }
 }
