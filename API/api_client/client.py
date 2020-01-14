@@ -63,12 +63,19 @@ class Client:
         response = self.recv_json_response(client_socket)
         return response["result"]
 
+    def send_search_query(self, query):
+        request = {"endpoint": "search", "q": query, "type": "all"}
+        client_socket = self.send_json_request(request)
+        response = self.recv_json_response(client_socket)
+        return response["result"]
+
 
 class GuiConnector:
     def __init__(self):
+        self.client = Client()
         self.gui_server_socket = socket.socket()
         try:
-            self.gui_server_socket.bind(("127.0.0.1", int(sys.argv[1])))
+            self.gui_server_socket.bind(("", int(sys.argv[1])))
         except IndexError:
             raise ValueError("please enter a port")
         self.gui_server_socket.listen(1)
@@ -90,11 +97,15 @@ class GuiConnector:
         """
         self.gui_socket.send(massage.encode())
 
+    def run(self):
+        while True:
+            response = json.loads(self.recv_data())
+            if response["endpoint"] == "search":
+                if response["type"] == "album":
+                    server_response = self.client.send_album_query(response["q"])
+                    self.send_data(json.dumps({"result": str(server_response)}))
+
 
 if __name__ == "__main__":
-    c = Client()
     gui_connector = GuiConnector()
-    print("dum")
-    print(gui_connector.recv_data())
-    while True:
-        pass
+    gui_connector.run()

@@ -21,9 +21,9 @@ namespace PlayHouse
         int StartClient()
         {
             System.Diagnostics.Process p = new System.Diagnostics.Process();
-            p.StartInfo.FileName = "python.exe";
+            p.StartInfo.FileName = @"C:\cyber\anaconda3\python.exe";
             String port = this.GenerentePort();
-            p.StartInfo.Arguments = @"C:\projects\playhouse\API\api_client\client.py " + port;
+            p.StartInfo.Arguments = @"D:\Users\User\playhouse\API\api_client\client.py " + port;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = false;
             p.Start();
@@ -32,7 +32,7 @@ namespace PlayHouse
         String GenerentePort()
         {
             Random rnd = new Random();
-            int port = rnd.Next(40000, 65535);
+            int port = rnd.Next(1000, 65535);
             return port.ToString();
         }
         public void Send(String Massage)

@@ -57,6 +57,8 @@ class ServerWorker(threading.Thread):
         if request["type"] == "album":
             album_id_list = self.get_album_id_list_by_name(request["q"])
             self.send_json_response({"result": album_id_list})
+        if request["type"] == "all":
+            album_id_list = self.get_album_id_list_by_name(request["q"])
 
     def get_album_by_id(self, album_id):
         if os.path.exists(self.ALBUM_DIR + "\\" + album_id + ".json"):
