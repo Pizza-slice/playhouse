@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,8 +27,36 @@ namespace PlayHouse
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            Dictionary<String,String> response =  this.clientHandler.SendSearchQuery(textBox1.Text, "album");
-            Console.WriteLine(response);
+            if (textBox1.Text != "")
+            {
+                JObject response = this.clientHandler.SendSearchQuery(textBox1.Text, "all");
+                response.Value<JArray>("artist").ToObject<List<String>>();
+
+                response.Value<JArray>("album").ToObject<List<String>>();
+
+                //listBox1.Items.AddRange();
+                response.Value<JArray>("song").ToObject<List<String>>().ForEach((String song_id) =>
+                {
+                    foreach (String item in listBox1.Items)
+                    {
+                        if (item.ToString() != song_id)
+                        {
+                            listBox1.Items.Add(song_id);
+                        }
+                    }
+                    if (listBox1.Items.Count == 0)
+                    {
+                        listBox1.Items.Add(song_id);
+                    }
+                });
+            }
+
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

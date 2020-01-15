@@ -31,13 +31,13 @@ class Client:
         request = {"endpoint": "info", "type": "album", "album_id": album_id}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
-        return response["album"]
+        return response
 
     def get_song_by_id(self, song_id):
         request = {"endpoint": "info", "type": "song", "song_id": song_id}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
-        return response["song"]
+        return response
 
     def get_artist_by_id(self, artist):
         request = {"endpoint": "info", "type": "artist", "artist_id": artist}
@@ -49,25 +49,25 @@ class Client:
         request = {"endpoint": "search", "q": name_of_song, "type": "song"}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
-        return response["result"]
+        return response
 
     def send_artist_query(self, name_of_artist):
         request = {"endpoint": "search", "q": name_of_artist, "type": "artist"}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
-        return response["result"]
+        return response
 
     def send_album_query(self, name_of_album):
         request = {"endpoint": "search", "q": name_of_album, "type": "album"}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
-        return response["result"]
+        return response
 
     def send_search_query(self, query):
         request = {"endpoint": "search", "q": query, "type": "all"}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
-        return response["result"]
+        return response
 
 
 class GuiConnector:
@@ -92,18 +92,27 @@ class GuiConnector:
         """
         send data to the gui socket
         :param massage:
-        :type massage: str
+        :type massage: dict
         :return:
         """
-        self.gui_socket.send(massage.encode())
+        self.gui_socket.send(json.dumps(massage).encode())
 
     def run(self):
         while True:
-            response = json.loads(self.recv_data())
-            if response["endpoint"] == "search":
-                if response["type"] == "album":
-                    server_response = self.client.send_album_query(response["q"])
-                    self.send_data(json.dumps({"result": str(server_response)}))
+            request = json.loads(self.recv_data())
+            if request["endpoint"] == "search":
+                if request["type"] == "album":
+                    server_response = self.client.send_album_query(request["q"])
+                    self.send_data(server_response)
+                elif request["type"] == "artist":
+                    server_response = self.client.send_artist_query(request["q"])
+                    self.send_data(server_response)
+                elif request["type"] == "song":
+                    server_response = self.client.send_song_query(request["q"])
+                    self.send_data(server_response)
+                elif request["type"] == "all":
+                    server_response = self.client.send_search_query(request["q"])
+                    self.send_data(server_response)
 
 
 if __name__ == "__main__":

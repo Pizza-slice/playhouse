@@ -50,15 +50,18 @@ class ServerWorker(threading.Thread):
         """
         if request["type"] == "song":
             song_id_list = self.get_song_id_list_by_name(request["q"])
-            self.send_json_response({"result": song_id_list})
+            self.send_json_response({"song": song_id_list})
         if request["type"] == "artist":
             artist_id_list = self.get_artist_id_list_by_name(request["q"])
-            self.send_json_response({"result": artist_id_list})
+            self.send_json_response({"artist": artist_id_list})
         if request["type"] == "album":
             album_id_list = self.get_album_id_list_by_name(request["q"])
-            self.send_json_response({"result": album_id_list})
+            self.send_json_response({"album": album_id_list})
         if request["type"] == "all":
             album_id_list = self.get_album_id_list_by_name(request["q"])
+            artist_id_list = self.get_artist_id_list_by_name(request["q"])
+            song_id_list = self.get_song_id_list_by_name(request["q"])
+            self.send_json_response({"song": song_id_list, "artist": artist_id_list, "album": album_id_list})
 
     def get_album_by_id(self, album_id):
         if os.path.exists(self.ALBUM_DIR + "\\" + album_id + ".json"):
