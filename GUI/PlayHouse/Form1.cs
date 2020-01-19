@@ -30,31 +30,47 @@ namespace PlayHouse
             if (textBox1.Text != "")
             {
                 JObject response = this.clientHandler.SendSearchQuery(textBox1.Text, "all");
-                response.Value<JArray>("artist").ToObject<List<String>>();
+                all.Items.Clear();
+                all.Items.Clear();
+                song_list.Items.Clear();
+                artist_list.Items.Clear();
+                album_list.Items.Clear();
+                all.Items.AddRange(response.Value<JArray>("album").ToObject<List<String>>().ToArray());
+                all.Items.AddRange(response.Value<JArray>("artist").ToObject<List<String>>().ToArray());
+                all.Items.AddRange(response.Value<JArray>("song").ToObject<List<String>>().ToArray());
+                song_list.Items.AddRange(response.Value<JArray>("song").ToObject<List<String>>().ToArray());
+                artist_list.Items.AddRange(response.Value<JArray>("artist").ToObject<List<String>>().ToArray());
+                album_list.Items.AddRange(response.Value<JArray>("album").ToObject<List<String>>().ToArray());
 
-                response.Value<JArray>("album").ToObject<List<String>>();
 
-                //listBox1.Items.AddRange();
-                response.Value<JArray>("song").ToObject<List<String>>().ForEach((String song_id) =>
-                {
-                    foreach (String item in listBox1.Items)
-                    {
-                        if (item.ToString() != song_id)
-                        {
-                            listBox1.Items.Add(song_id);
-                        }
-                    }
-                    if (listBox1.Items.Count == 0)
-                    {
-                        listBox1.Items.Add(song_id);
-                    }
-                });
+
+            }
+            else
+            {
+                all.Items.Clear();
+                song_list.Items.Clear();
+                artist_list.Items.Clear();
+                album_list.Items.Clear();
             }
 
 
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

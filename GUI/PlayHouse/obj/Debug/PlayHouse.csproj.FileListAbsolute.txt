@@ -10,7 +10,6 @@ C:\projects\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Form1.resources
 D:\Users\User\playhouse\GUI\PlayHouse\bin\Debug\PlayHouse.exe.config
 D:\Users\User\playhouse\GUI\PlayHouse\bin\Debug\PlayHouse.exe
 D:\Users\User\playhouse\GUI\PlayHouse\bin\Debug\PlayHouse.pdb
-D:\Users\User\playhouse\GUI\PlayHouse\bin\Debug\Newtonsoft.Json.dll
 D:\Users\User\playhouse\GUI\PlayHouse\bin\Debug\Newtonsoft.Json.xml
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csprojAssemblyReference.cache
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Form1.resources
@@ -19,3 +18,4 @@ D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csproj.GenerateResourc
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csproj.CopyComplete
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.exe
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.pdb
+D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Form2.resources
