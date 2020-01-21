@@ -35,12 +35,12 @@ namespace PlayHouse
                 song_list.Items.Clear();
                 artist_list.Items.Clear();
                 album_list.Items.Clear();
-                all.Items.AddRange(response.Value<JArray>("album").ToObject<List<String>>().ToArray());
-                all.Items.AddRange(response.Value<JArray>("artist").ToObject<List<String>>().ToArray());
-                all.Items.AddRange(response.Value<JArray>("song").ToObject<List<String>>().ToArray());
-                song_list.Items.AddRange(response.Value<JArray>("song").ToObject<List<String>>().ToArray());
-                artist_list.Items.AddRange(response.Value<JArray>("artist").ToObject<List<String>>().ToArray());
-                album_list.Items.AddRange(response.Value<JArray>("album").ToObject<List<String>>().ToArray());
+                all.Items.AddRange(this.GetNameById(response.Value<JArray>("album").ToObject<List<String>>().ToArray(), "album"));
+                all.Items.AddRange(this.GetNameById(response.Value<JArray>("artist").ToObject<List<String>>().ToArray(), "artist"));
+                all.Items.AddRange(this.GetNameById(response.Value<JArray>("song").ToObject<List<String>>().ToArray(), "song"));
+                song_list.Items.AddRange(this.GetNameById(response.Value<JArray>("album").ToObject<List<String>>().ToArray(), "album"));
+                artist_list.Items.AddRange(this.GetNameById(response.Value<JArray>("artist").ToObject<List<String>>().ToArray(), "artist"));
+                album_list.Items.AddRange(this.GetNameById(response.Value<JArray>("song").ToObject<List<String>>().ToArray(), "song"));
 
 
 
@@ -55,7 +55,16 @@ namespace PlayHouse
 
 
         }
-
+        public String[] GetNameById(String[] idList, String type)
+        {
+            List<String> nameList = new List<string>();
+            foreach (String id in idList)
+            {
+                JObject json_response = this.clientHandler.GetNameById(id, type);
+                nameList.Add(json_response[type]["name"].ToString());
+            }
+            return nameList.ToArray();
+        }
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -72,7 +81,18 @@ namespace PlayHouse
         }
         private void label1_Click(object sender, EventArgs e)
         {
+            
+        }
+
+        private void artist_result_Click(object sender, EventArgs e)
+        {
 
         }
+
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }

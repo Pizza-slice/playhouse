@@ -43,7 +43,7 @@ class Client:
         request = {"endpoint": "info", "type": "artist", "artist_id": artist}
         client_socket = self.send_json_request(request)
         response = self.recv_json_response(client_socket)
-        return response["artist"]
+        return response
 
     def send_song_query(self, name_of_song):
         request = {"endpoint": "search", "q": name_of_song, "type": "song"}
@@ -113,6 +113,15 @@ class GuiConnector:
                 elif request["type"] == "all":
                     server_response = self.client.send_search_query(request["q"])
                     self.send_data(server_response)
+            elif request["endpoint"] == "album":
+                server_response = self.client.get_album_by_id(request["q"])
+                self.send_data(server_response)
+            elif request["endpoint"] == "song":
+                server_response = self.client.get_song_by_id(request["q"])
+                self.send_data(server_response)
+            elif request["endpoint"] == "artist":
+                server_response = self.client.get_artist_by_id(request["q"])
+                self.send_data(server_response)
 
 
 if __name__ == "__main__":

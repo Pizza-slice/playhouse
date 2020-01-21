@@ -18,4 +18,3 @@ D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csproj.GenerateResourc
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csproj.CopyComplete
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.exe
 D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.pdb
-D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Form2.resources

@@ -25,6 +25,15 @@ namespace PlayHouse
             String json_response = c.Recv(1024);
             return JsonConvert.DeserializeObject<JObject>(json_response);
         }
+        public JObject GetNameById(String id, String type)
+        {
+            Dictionary<string, string> json_request = new Dictionary<string, string>();
+            json_request["endpoint"] = type;
+            json_request["q"] = id;
+            c.Send(JsonConvert.SerializeObject(json_request));
+            String json_response = c.Recv(1024);
+            return JsonConvert.DeserializeObject<JObject>(json_response);
+        }
     }
         
 }

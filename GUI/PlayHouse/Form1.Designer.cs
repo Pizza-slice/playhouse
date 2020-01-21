@@ -33,7 +33,10 @@
             this.artist_list = new System.Windows.Forms.ListBox();
             this.song_list = new System.Windows.Forms.ListBox();
             this.album_list = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.all_result = new System.Windows.Forms.Label();
+            this.artist_result = new System.Windows.Forms.Label();
+            this.song_result = new System.Windows.Forms.Label();
+            this.album_result = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox1
@@ -79,22 +82,54 @@
             this.album_list.TabIndex = 4;
             this.album_list.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
-            // label1
+            // all_result
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(248, 152);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "label1";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.all_result.AutoSize = true;
+            this.all_result.Location = new System.Drawing.Point(248, 157);
+            this.all_result.Name = "all_result";
+            this.all_result.Size = new System.Drawing.Size(17, 13);
+            this.all_result.TabIndex = 5;
+            this.all_result.Text = "all";
+            this.all_result.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // artist_result
+            // 
+            this.artist_result.AutoSize = true;
+            this.artist_result.Location = new System.Drawing.Point(248, 317);
+            this.artist_result.Name = "artist_result";
+            this.artist_result.Size = new System.Drawing.Size(29, 13);
+            this.artist_result.TabIndex = 6;
+            this.artist_result.Text = "artist";
+            this.artist_result.Click += new System.EventHandler(this.artist_result_Click);
+            // 
+            // song_result
+            // 
+            this.song_result.AutoSize = true;
+            this.song_result.Location = new System.Drawing.Point(633, 157);
+            this.song_result.Name = "song_result";
+            this.song_result.Size = new System.Drawing.Size(35, 13);
+            this.song_result.TabIndex = 7;
+            this.song_result.Text = "songs";
+            this.song_result.Click += new System.EventHandler(this.label1_Click_1);
+            // 
+            // album_result
+            // 
+            this.album_result.AutoSize = true;
+            this.album_result.Location = new System.Drawing.Point(628, 317);
+            this.album_result.Name = "album_result";
+            this.album_result.Size = new System.Drawing.Size(40, 13);
+            this.album_result.TabIndex = 8;
+            this.album_result.Text = "albums";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1380, 783);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.album_result);
+            this.Controls.Add(this.song_result);
+            this.Controls.Add(this.artist_result);
+            this.Controls.Add(this.all_result);
             this.Controls.Add(this.album_list);
             this.Controls.Add(this.song_list);
             this.Controls.Add(this.artist_list);
@@ -115,7 +150,10 @@
         private System.Windows.Forms.ListBox artist_list;
         private System.Windows.Forms.ListBox song_list;
         private System.Windows.Forms.ListBox album_list;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label all_result;
+        private System.Windows.Forms.Label artist_result;
+        private System.Windows.Forms.Label song_result;
+        private System.Windows.Forms.Label album_result;
     }
 }
 
