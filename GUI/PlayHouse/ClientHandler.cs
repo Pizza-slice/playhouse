@@ -25,7 +25,7 @@ namespace PlayHouse
             String json_response = c.Recv(1024);
             return JsonConvert.DeserializeObject<JObject>(json_response);
         }
-        public JObject GetNameById(String id, String type)
+        public JObject GetJsonById(String id, String type)
         {
             Dictionary<string, string> json_request = new Dictionary<string, string>();
             json_request["endpoint"] = type;

@@ -30,11 +30,7 @@ namespace PlayHouse
             if (textBox1.Text != "")
             {
                 JObject response = this.clientHandler.SendSearchQuery(textBox1.Text, "all");
-                all.Items.Clear();
-                all.Items.Clear();
-                song_list.Items.Clear();
-                artist_list.Items.Clear();
-                album_list.Items.Clear();
+                ClearList();
                 all.Items.AddRange(this.GetNameById(response.Value<JArray>("album").ToObject<List<String>>().ToArray(), "album"));
                 all.Items.AddRange(this.GetNameById(response.Value<JArray>("artist").ToObject<List<String>>().ToArray(), "artist"));
                 all.Items.AddRange(this.GetNameById(response.Value<JArray>("song").ToObject<List<String>>().ToArray(), "song"));
@@ -54,6 +50,13 @@ namespace PlayHouse
             }
 
 
+        }
+        public void ClearList()
+        {
+            all.Items.Clear();
+            song_list.Items.Clear();
+            artist_list.Items.Clear();
+            album_list.Items.Clear();
         }
         public String[] GetNameById(String[] idList, String type)
         {
