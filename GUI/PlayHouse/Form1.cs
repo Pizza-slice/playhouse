@@ -30,20 +30,19 @@ namespace PlayHouse
             if (textBox1.Text != "")
             {
                 JObject response = this.clientHandler.SendSearchQuery(textBox1.Text, "all");
+                List<PlayableItem> itemList = new List<PlayableItem>();
                 ClearList();
-                all.Items.AddRange(this.GetNameById(response.Value<JArray>("album").ToObject<List<String>>().ToArray(), "album"));
-                all.Items.AddRange(this.GetNameById(response.Value<JArray>("artist").ToObject<List<String>>().ToArray(), "artist"));
-                all.Items.AddRange(this.GetNameById(response.Value<JArray>("song").ToObject<List<String>>().ToArray(), "song"));
-                song_list.Items.AddRange(this.GetNameById(response.Value<JArray>("album").ToObject<List<String>>().ToArray(), "album"));
-                artist_list.Items.AddRange(this.GetNameById(response.Value<JArray>("artist").ToObject<List<String>>().ToArray(), "artist"));
-                album_list.Items.AddRange(this.GetNameById(response.Value<JArray>("song").ToObject<List<String>>().ToArray(), "song"));
+                itemList.AddRange(this.GetItemByID(response.Value<JArray>("album").ToObject<List<String>>(), "album"));
+                itemList.AddRange(this.GetItemByID(response.Value<JArray>("artist").ToObject<List<String>>(), "artist"));
+                itemList.AddRange(this.GetItemByID(response.Value<JArray>("song").ToObject<List<String>>(), "song"));
+                this.UpdateItemList(itemList);
 
 
 
             }
             else
             {
-                all.Items.Clear();
+                allList.Items.Clear();
                 song_list.Items.Clear();
                 artist_list.Items.Clear();
                 album_list.Items.Clear();
@@ -51,38 +50,64 @@ namespace PlayHouse
 
 
         }
+        public void UpdateItemList(List<PlayableItem> itemList)
+        {
+           foreach(PlayableItem item in itemList)
+            {
+                allList.Items.Add(item.GetName());
+                Console.WriteLine(item.GetType());
+                if (item.GetType().Equals("album"))
+                {
+                    album_list.Items.Add(item.GetName());
+                }
+                else if (item.GetType().Equals("artist"))
+                {
+                    artist_list.Items.Add(item.GetName());
+                }
+                else if (item.GetType().Equals("song"))
+                {
+                    song_list.Items.Add(item.GetName());
+                }
+            }
+        }
+        public List<PlayableItem> GetItemByID(List<String> idList, String type)
+        {
+            List<PlayableItem> itemList = new List<PlayableItem>();
+            foreach (String id in idList)
+            {
+                
+                PlayableItem playbleitem = new PlayableItem(id, type);
+                playbleitem.GetJsonById(this.clientHandler);
+                itemList.Add(playbleitem);
+            }
+            return itemList;
+        }
         public void ClearList()
         {
-            all.Items.Clear();
+            allList.Items.Clear();
             song_list.Items.Clear();
             artist_list.Items.Clear();
             album_list.Items.Clear();
         }
-        public String[] GetNameById(String[] idList, String type)
-        {
-            List<String> nameList = new List<string>();
-            foreach (String id in idList)
-            {
-                JObject json_response = this.clientHandler.GetNameById(id, type);
-                nameList.Add(json_response[type]["name"].ToString());
-            }
-            return nameList.ToArray();
-        }
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        
+        private void all_list_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void song_list_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
-
-        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        private void artist_list_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
-        private void label1_Click(object sender, EventArgs e)
+        private void album_list_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void all_result_click(object sender, EventArgs e)
         {
             
         }
@@ -96,6 +121,5 @@ namespace PlayHouse
         {
 
         }
-
     }
 }

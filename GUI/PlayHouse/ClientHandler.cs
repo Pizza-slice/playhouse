@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PlayHouse
 {
-    class ClientHandler
+    public class ClientHandler
     {
         private ClientConnection c;
         public ClientHandler(ClientConnection c)
