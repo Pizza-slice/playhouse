@@ -3,6 +3,8 @@ import os
 import socket
 import threading
 
+import search_engine
+
 
 class ServerWorker(threading.Thread):
     SOCKET_BUFFER = 1024
@@ -50,18 +52,21 @@ class ServerWorker(threading.Thread):
         """
         if request["type"] == "song":
             song_id_list = self.get_song_id_list_by_name(request["q"])
-            self.send_json_response({"song": song_id_list})
+            self.send_json_response({"song": search_engine.SearchEngine(request["q"], song_id_list, "song")})
         if request["type"] == "artist":
             artist_id_list = self.get_artist_id_list_by_name(request["q"])
-            self.send_json_response({"artist": artist_id_list})
+            self.send_json_response({"artist": search_engine.SearchEngine(request["q"], artist_id_list, "artist")})
         if request["type"] == "album":
             album_id_list = self.get_album_id_list_by_name(request["q"])
-            self.send_json_response({"album": album_id_list})
+            self.send_json_response({"album": search_engine.SearchEngine(request["q"], album_id_list, "artist")})
         if request["type"] == "all":
             album_id_list = self.get_album_id_list_by_name(request["q"])
             artist_id_list = self.get_artist_id_list_by_name(request["q"])
             song_id_list = self.get_song_id_list_by_name(request["q"])
-            self.send_json_response({"song": song_id_list, "artist": artist_id_list, "album": album_id_list})
+            album_result = search_engine.SearchEngine(request["q"], album_id_list, "artist")
+            song_result = search_engine.SearchEngine(request["q"], song_id_list, "song")
+            artist_result = search_engine.SearchEngine(request["q"], artist_id_list, "artist")
+            self.send_json_response({"song": song_result, "artist": artist_result, "album": album_result})
 
     def get_album_by_id(self, album_id):
         if os.path.exists(self.ALBUM_DIR + "\\" + album_id + ".json"):

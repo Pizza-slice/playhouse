@@ -21,9 +21,9 @@ namespace PlayHouse
         int StartClient()
         {
             System.Diagnostics.Process p = new System.Diagnostics.Process();
-            p.StartInfo.FileName = @"C:\cyber\anaconda3\python.exe";
+            p.StartInfo.FileName = @"C:\Users\Pizza-Slice\AppData\Local\Programs\Python\Python37\python.exe";
             String port = this.GenerentePort();
-            p.StartInfo.Arguments = @"D:\Users\User\playhouse\API\api_client\client.py " + port;
+            p.StartInfo.Arguments = @"C:\projects\playhouse\API\api_client\client.py " + port;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = false;
             p.Start();
