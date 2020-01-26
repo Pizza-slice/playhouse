@@ -119,7 +119,7 @@
             this.song_result.Size = new System.Drawing.Size(35, 13);
             this.song_result.TabIndex = 7;
             this.song_result.Text = "songs";
-            this.song_result.Click += new System.EventHandler(this.label1_Click_1);
+            this.song_result.Click += new System.EventHandler(this.song_result_Click);
             // 
             // album_result
             // 
@@ -129,6 +129,7 @@
             this.album_result.Size = new System.Drawing.Size(40, 13);
             this.album_result.TabIndex = 8;
             this.album_result.Text = "albums";
+            this.album_result.Click += new System.EventHandler(this.album_result_Click);
             // 
             // Form1
             // 

@@ -5,22 +5,35 @@ import jellyfish
 
 
 class SearchEngine:
-
+    THRESHOLD = 0.7
     def __init__(self, search_query, item_list, item_type):
+        """
+        :type search_query: str
+        :type item_list: list
+        :type item_type: str
+        :param search_query:
+        :param item_list:
+        :param item_type:
+        """
         self.item_list = []
         for item in item_list:
             self.item_list.append(Item(item_type, item))
         self.search_query = search_query
-        self.search()
 
     def search(self):
         result = []
-        for item in self.item_list:
-            ratio = jellyfish.jaro_winkler(self.search_query, item.name)
-            if ratio >= 0.4:
-                item.ratio = ratio
-                result.append(item)
-        return sorted(result, key=lambda x: x.ratio, reverse=True)
+        if self.item_list:
+            for item in self.item_list:
+                ratio = jellyfish.jaro_winkler(self.search_query, item.name)
+                if ratio >= self.THRESHOLD:
+                    item.ratio = ratio
+                    result.append(item)
+            if result:
+                return [item.item_id for item in sorted(result, key=lambda x: x.ratio, reverse=True)]
+            else:
+
+                return []
+        return []
 
 
 class Item:

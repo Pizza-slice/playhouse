@@ -14,6 +14,7 @@ namespace PlayHouse
     public partial class Form1 : Form
     {
         private ClientHandler clientHandler;
+        private List<PlayableItem> itemList = new List<PlayableItem>();
         public Form1(ClientConnection c)
         {
             this.clientHandler = new ClientHandler(c);
@@ -30,15 +31,11 @@ namespace PlayHouse
             if (textBox1.Text != "")
             {
                 JObject response = this.clientHandler.SendSearchQuery(textBox1.Text, "all");
-                List<PlayableItem> itemList = new List<PlayableItem>();
                 ClearList();
-                itemList.AddRange(this.GetItemByID(response.Value<JArray>("album").ToObject<List<String>>(), "album"));
-                itemList.AddRange(this.GetItemByID(response.Value<JArray>("artist").ToObject<List<String>>(), "artist"));
-                itemList.AddRange(this.GetItemByID(response.Value<JArray>("song").ToObject<List<String>>(), "song"));
+                this.itemList.AddRange(this.GetItemByID(response.Value<JArray>("album").ToObject<List<String>>(), "album"));
+                this.itemList.AddRange(this.GetItemByID(response.Value<JArray>("artist").ToObject<List<String>>(), "artist"));
+                this.itemList.AddRange(this.GetItemByID(response.Value<JArray>("song").ToObject<List<String>>(), "song"));
                 this.UpdateItemList(itemList);
-
-
-
             }
             else
             {
@@ -70,17 +67,23 @@ namespace PlayHouse
                 }
             }
         }
+        public PlayableItem GetItemByName()
+        {
+            foreach(PlayableItem item in this.itemList){
+
+            }
+        }
         public List<PlayableItem> GetItemByID(List<String> idList, String type)
         {
-            List<PlayableItem> itemList = new List<PlayableItem>();
+            List<PlayableItem> tempitemList = new List<PlayableItem>();
             foreach (String id in idList)
             {
                 
                 PlayableItem playbleitem = new PlayableItem(id, type);
                 playbleitem.GetJsonById(this.clientHandler);
-                itemList.Add(playbleitem);
+                tempitemList.Add(playbleitem);
             }
-            return itemList;
+            return tempitemList;
         }
         public void ClearList()
         {
@@ -92,12 +95,13 @@ namespace PlayHouse
         
         private void all_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            String text = allList.GetItemText(allList.SelectedItem);
+            this.GetItemByName()
         }
 
         private void song_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            String text = allList.GetItemText(allList.SelectedItem);
         }
         private void artist_list_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -117,7 +121,12 @@ namespace PlayHouse
 
         }
 
-        private void label1_Click_1(object sender, EventArgs e)
+        private void song_result_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void album_result_Click(object sender, EventArgs e)
         {
 
         }

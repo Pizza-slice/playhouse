@@ -51,22 +51,20 @@ class ServerWorker(threading.Thread):
         :return:
         """
         if request["type"] == "song":
-            song_id_list = self.get_song_id_list_by_name(request["q"])
-            self.send_json_response({"song": search_engine.SearchEngine(request["q"], song_id_list, "song")})
+            search_result = search_engine.SearchEngine(request["q"], self.get_song_id_list(), "song").search()
+            self.send_json_response({"song": search_result})
         if request["type"] == "artist":
-            artist_id_list = self.get_artist_id_list_by_name(request["q"])
-            self.send_json_response({"artist": search_engine.SearchEngine(request["q"], artist_id_list, "artist")})
+            search_result = search_engine.SearchEngine(request["q"], self.get_artist_id_list(), "artist").search()
+            self.send_json_response({"artist": search_result})
         if request["type"] == "album":
-            album_id_list = self.get_album_id_list_by_name(request["q"])
-            self.send_json_response({"album": search_engine.SearchEngine(request["q"], album_id_list, "artist")})
+            search_result = search_engine.SearchEngine(request["q"], self.get_album_id_list(), "album").search()
+            self.send_json_response({"album": search_result})
         if request["type"] == "all":
-            album_id_list = self.get_album_id_list_by_name(request["q"])
-            artist_id_list = self.get_artist_id_list_by_name(request["q"])
-            song_id_list = self.get_song_id_list_by_name(request["q"])
-            album_result = search_engine.SearchEngine(request["q"], album_id_list, "artist")
-            song_result = search_engine.SearchEngine(request["q"], song_id_list, "song")
-            artist_result = search_engine.SearchEngine(request["q"], artist_id_list, "artist")
-            self.send_json_response({"song": song_result, "artist": artist_result, "album": album_result})
+            search_album = search_engine.SearchEngine(request["q"], self.get_album_id_list(), "album").search()
+            search_artist = search_engine.SearchEngine(request["q"], self.get_artist_id_list(), "artist").search()
+            search_song = search_engine.SearchEngine(request["q"], self.get_song_id_list(), "song").search()
+            self.send_json_response(
+                {"song": search_song, "artist": search_artist, "album": search_album})
 
     def get_album_by_id(self, album_id):
         if os.path.exists(self.ALBUM_DIR + "\\" + album_id + ".json"):
@@ -89,34 +87,25 @@ class ServerWorker(threading.Thread):
         else:
             return {"error": "not found", "code": "404"}
 
-    def get_album_id_list_by_name(self, name):
+    def get_album_id_list(self):
         match_song_list = []
         artist_id_list = os.listdir(self.ALBUM_DIR)
         for album in artist_id_list:
-            with open(self.ALBUM_DIR + "\\" + album) as f:
-                request = json.load(f)
-                if name in request["name"]:
-                    match_song_list.append(album.split(".")[0])
+            match_song_list.append(album.split(".")[0])
         return match_song_list
 
-    def get_artist_id_list_by_name(self, name):
+    def get_artist_id_list(self):
         match_song_list = []
         artist_id_list = os.listdir(self.ARTIST_DIR)
         for artist in artist_id_list:
-            with open(self.ARTIST_DIR + "\\" + artist) as f:
-                request = json.load(f)
-                if name in request["name"]:
-                    match_song_list.append(artist.split(".")[0])
+            match_song_list.append(artist.split(".")[0])
         return match_song_list
 
-    def get_song_id_list_by_name(self, name):
+    def get_song_id_list(self):
         match_song_list = []
         song_id_list = os.listdir(self.SONG_DIR)
         for song in song_id_list:
-            with open(self.SONG_DIR + "\\" + song) as f:
-                request = json.load(f)
-                if name in request["name"]:
-                    match_song_list.append(song.split(".")[0])
+            match_song_list.append(song.split(".")[0])
         return match_song_list
 
     def send_json_response(self, response):
