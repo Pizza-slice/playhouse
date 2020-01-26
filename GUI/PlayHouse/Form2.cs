@@ -12,9 +12,19 @@ namespace PlayHouse
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        private PlayableItem item;
+        private ClientHandler clientHandler;
+        public Form2(PlayableItem item, ClientHandler c)
         {
             InitializeComponent();
+            this.item = item;
+            this.clientHandler = c;
         }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            this.clientHandler.s
+        }
+        
     }
 }

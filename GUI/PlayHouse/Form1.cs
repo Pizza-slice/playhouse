@@ -67,11 +67,17 @@ namespace PlayHouse
                 }
             }
         }
-        public PlayableItem GetItemByName()
+        public PlayableItem GetItemByName(String itemName)
         {
-            foreach(PlayableItem item in this.itemList){
-
+            foreach(PlayableItem item in this.itemList)
+            {
+                
+                if (item.GetName().Equals(itemName))
+                {
+                    return item;
+                }
             }
+            return null;
         }
         public List<PlayableItem> GetItemByID(List<String> idList, String type)
         {
@@ -95,8 +101,12 @@ namespace PlayHouse
         
         private void all_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String text = allList.GetItemText(allList.SelectedItem);
-            this.GetItemByName()
+            String ItemName = allList.GetItemText(allList.SelectedItem);
+            PlayableItem selectItem = this.GetItemByName(ItemName);
+            if (selectItem != null)
+            {
+                Application.Run(new Form2(selectItem, this.clientHandler));
+            }
         }
 
         private void song_list_SelectedIndexChanged(object sender, EventArgs e)
