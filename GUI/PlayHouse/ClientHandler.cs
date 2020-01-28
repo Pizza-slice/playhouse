@@ -45,12 +45,12 @@ namespace PlayHouse
             int data_length = JsonConvert.DeserializeObject<JObject>(c.Recv(1024)).Value<int>("data_length");
             c.Send("OK");
             String data = "";
-            using (FileStream fs = File.Create(this.cachePath + "\\temp.jpg"))
+            using (StreamWriter outputFile = new StreamWriterPath(this.cachePath +"\\temp.jpg"))
             {
                 for (int i = 1; i <= data_length; i++)
                 {
                     data = c.Recv(1024);
-                    fs.Write(Encoding.ASCII.GetBytes(data), 0, 1024);
+                    
                 }
                 if (data_length % 1024 != 0)
                     data = c.Recv(1024);
