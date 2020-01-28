@@ -1,3 +1,4 @@
+import base64
 import json
 import socket
 import sys
@@ -22,10 +23,14 @@ class Client:
 
     def recv_json_response(self, client_socket):
         data = client_socket.recv(self.SOCKET_BUFFER)
-
         json_response = json.loads(data)
         client_socket.close()
         return json_response
+
+    def recv_response(self, client_socket):
+        data = client_socket.recv(self.SOCKET_BUFFER)
+        client_socket.close()
+        return data
 
     def get_album_by_id(self, album_id):
         request = {"endpoint": "info", "type": "album", "album_id": album_id}
@@ -69,6 +74,12 @@ class Client:
         response = self.recv_json_response(client_socket)
         return response
 
+    def send_coverImage_query(self, query):
+        request = {"endpoint": "coverImage", "q": query}
+        client_socket = self.send_json_request(request)
+        response = self.recv_response(client_socket)
+        return response
+
 
 class GuiConnector:
     def __init__(self):
@@ -88,7 +99,7 @@ class GuiConnector:
         """
         return self.gui_socket.recv(1024)
 
-    def send_data(self, massage):
+    def send_json_data(self, massage):
         """
         send data to the gui socket
         :param massage:
@@ -97,31 +108,57 @@ class GuiConnector:
         """
         self.gui_socket.send(json.dumps(massage).encode())
 
+    def send_data(self, massage):
+        self.gui_socket.send(massage)
+
+    def send_image(self, data):
+        counter = 0
+        for i in range(int(len(data) / 1024)):
+            self.send_data(data[counter:counter + 1024])
+            counter += 1024
+        if data % 1024 != 0:
+            self.send_data(data[counter:])
+
     def run(self):
         while True:
             request = json.loads(self.recv_data())
             if request["endpoint"] == "search":
-                if request["type"] == "album":
-                    server_response = self.client.send_album_query(request["q"])
-                    self.send_data(server_response)
-                elif request["type"] == "artist":
-                    server_response = self.client.send_artist_query(request["q"])
-                    self.send_data(server_response)
-                elif request["type"] == "song":
-                    server_response = self.client.send_song_query(request["q"])
-                    self.send_data(server_response)
-                elif request["type"] == "all":
-                    server_response = self.client.send_search_query(request["q"])
-                    self.send_data(server_response)
+                self.handle_search(request)
+            elif request["endpoint"] == "coverImage":
+                self.handle_coverImage(request)
             elif request["endpoint"] == "album":
                 server_response = self.client.get_album_by_id(request["q"])
-                self.send_data(server_response)
+                self.send_json_data(server_response)
             elif request["endpoint"] == "song":
                 server_response = self.client.get_song_by_id(request["q"])
-                self.send_data(server_response)
+                self.send_json_data(server_response)
             elif request["endpoint"] == "artist":
                 server_response = self.client.get_artist_by_id(request["q"])
-                self.send_data(server_response)
+                self.send_json_data(server_response)
+
+    def handle_coverImage(self, request):
+        server_response = self.client.send_coverImage_query(request["q"])
+        self.send_json_data({"data_length": len(base64.b64decode(server_response))})
+        print("lo")
+        data = self.recv_data()
+        print(data)
+        if data.decode() == "OK":
+            print("ya")
+            self.send_image(base64.b64decode(server_response))
+
+    def handle_search(self, request):
+        if request["type"] == "album":
+            server_response = self.client.send_album_query(request["q"])
+            self.send_json_data(server_response)
+        elif request["type"] == "artist":
+            server_response = self.client.send_artist_query(request["q"])
+            self.send_json_data(server_response)
+        elif request["type"] == "song":
+            server_response = self.client.send_song_query(request["q"])
+            self.send_json_data(server_response)
+        elif request["type"] == "all":
+            server_response = self.client.send_search_query(request["q"])
+            self.send_json_data(server_response)
 
 
 if __name__ == "__main__":

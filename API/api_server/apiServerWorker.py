@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import socket
@@ -11,6 +12,7 @@ class ServerWorker(threading.Thread):
     SONG_DIR = "files_matadata\\song_matadata"
     ARTIST_DIR = "files_matadata\\artist_matadata"
     ALBUM_DIR = "files_matadata\\album_matadata"
+    COVERIMAGE_DIR = "files_matadata\\cover_image"
 
     def __init__(self, client_socket):
         """
@@ -26,8 +28,11 @@ class ServerWorker(threading.Thread):
         if self.check_data(request):
             if request["endpoint"] == "search":
                 self.handle_search(request)
-            if request["endpoint"] == "info":
+            elif request["endpoint"] == "info":
                 self.handle_info(request)
+            elif request["endpoint"] == "coverImage":
+                response = self.get_cover_image(request["q"])
+                self.send_response(response)
 
     def handle_info(self, request):
         """
@@ -65,6 +70,14 @@ class ServerWorker(threading.Thread):
             search_song = search_engine.SearchEngine(request["q"], self.get_song_id_list(), "song").search()
             self.send_json_response(
                 {"song": search_song, "artist": search_artist, "album": search_album})
+
+    def get_cover_image(self, cover_image_id):
+        print(self.COVERIMAGE_DIR + "\\" + cover_image_id)
+        if os.path.isfile(self.COVERIMAGE_DIR + "\\" + cover_image_id):
+            with open(self.COVERIMAGE_DIR + "\\" + cover_image_id, "rb") as f:
+                return base64.b64encode(f.read())
+        else:
+            return {"error": "not found", "code": "404"}
 
     def get_album_by_id(self, album_id):
         if os.path.exists(self.ALBUM_DIR + "\\" + album_id + ".json"):
@@ -124,6 +137,9 @@ class ServerWorker(threading.Thread):
         """
         return json.loads(self.client_socket.recv(self.SOCKET_BUFFER))
 
+    def send_response(self, response):
+        self.client_socket.send(response)
+
     @staticmethod
     def check_data(request):
         """
@@ -136,5 +152,7 @@ class ServerWorker(threading.Thread):
         if "endpoint" in keys:
             if request["endpoint"] == "search":
                 return "type" in keys and "q" in keys
-            if request["endpoint"] == "info":
+            elif request["endpoint"] == "info":
                 return request["type"] in info_types
+            elif request["endpoint"] == "coverImage":
+                return "q" in keys

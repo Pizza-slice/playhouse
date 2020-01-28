@@ -13,6 +13,7 @@ namespace PlayHouse
         public ClientConnection()
         {
             int port = this.StartClient();
+            //int port = 3000;
             IPAddress ipAddr = IPAddress.Parse("127.0.0.1");
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, port);
             this.ClientSocket = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);

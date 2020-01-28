@@ -39,10 +39,7 @@ namespace PlayHouse
             }
             else
             {
-                allList.Items.Clear();
-                song_list.Items.Clear();
-                artist_list.Items.Clear();
-                album_list.Items.Clear();
+                ClearList();
             }
 
 
@@ -97,15 +94,21 @@ namespace PlayHouse
             song_list.Items.Clear();
             artist_list.Items.Clear();
             album_list.Items.Clear();
+            this.itemList.Clear();
         }
         
         private void all_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String ItemName = allList.GetItemText(allList.SelectedItem);
-            PlayableItem selectItem = this.GetItemByName(ItemName);
-            if (selectItem != null)
+            if (allList.SelectedItem != null)
             {
-                Application.Run(new Form2(selectItem, this.clientHandler));
+                String ItemName = allList.GetItemText(allList.SelectedItem);
+                PlayableItem selectItem = this.GetItemByName(ItemName);
+                if (selectItem.GetType().Equals("album"))
+                {
+                    Form2 form2 = new Form2(selectItem, this.clientHandler);
+                    form2.ShowDialog();
+                    this.Close();
+                }
             }
         }
 

@@ -24,6 +24,10 @@ namespace PlayHouse
             this.type = type;
             this.json = null;
         }
+        public JObject GetJson()
+        {
+            return this.json;
+        }
         public void GetJsonById(ClientHandler clientHandler)
         {
             this.json = clientHandler.GetJsonById(this.id, this.type);
