@@ -36,26 +36,15 @@ namespace PlayHouse
             String json_response = c.Recv(1024);
             return JsonConvert.DeserializeObject<JObject>(json_response);
         }
-        public void GetCoverImage(String coverImageId)
+        public String GetCoverImage(String coverImageId)
         {
-            Dictionary<String, String> json_requst = new Dictionary<string, string>();
-            json_requst["endpoint"] = "coverImage";
-            json_requst["q"] = coverImageId;
-            c.Send(JsonConvert.SerializeObject(json_requst));
-            int data_length = JsonConvert.DeserializeObject<JObject>(c.Recv(1024)).Value<int>("data_length");
-            c.Send("OK");
-            String data = "";
-            using (StreamWriter outputFile = new StreamWriterPath(this.cachePath +"\\temp.jpg"))
-            {
-                for (int i = 1; i <= data_length; i++)
-                {
-                    data = c.Recv(1024);
-                    
-                }
-                if (data_length % 1024 != 0)
-                    data = c.Recv(1024);
-                fs.Write(Encoding.ASCII.GetBytes(data), 0, data_length % 1024);
-            }
+            Dictionary<string, string> json_request = new Dictionary<string, string>();
+            json_request["endpoint"] = "coverImage";
+            json_request["q"] = coverImageId;
+            c.Send(JsonConvert.SerializeObject(json_request));
+            String json_response = c.Recv(1024);
+            Console.WriteLine(json_response);
+            return JsonConvert.DeserializeObject<JObject>(json_response).Value<String>("path");
         }
     }
 }

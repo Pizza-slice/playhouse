@@ -5,7 +5,8 @@ import jellyfish
 
 
 class SearchEngine:
-    THRESHOLD = 0.7
+    THRESHOLD = 0.5
+
     def __init__(self, search_query, item_list, item_type):
         """
         :type search_query: str

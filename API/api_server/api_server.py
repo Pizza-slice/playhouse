@@ -22,6 +22,7 @@ def main():
     s.initialize_server_socket()
     while True:
         ServerWorker(s.accept_new_connection())
+        print("connected")
 
 
 if __name__ == '__main__':

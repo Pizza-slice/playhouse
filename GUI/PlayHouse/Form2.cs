@@ -1,34 +1,37 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
-using Newtonsoft.Json.Linq;
 
 namespace PlayHouse
-{  
+{
     public partial class Form2 : Form
     {
-        private PlayableItem item;
         private ClientHandler clientHandler;
-        private String cachePath = @"D:\Users\User\playhouse\GUI\PlayHouse\cache";
-        public Form2(PlayableItem item, ClientHandler c)
+        private JObject jsonData;
+        private String CACHE_DIR = @"D:\Users\User\playhouse\API\api_client";
+
+        public Form2(ClientHandler c, JObject jsonData)
         {
             InitializeComponent();
-            this.item = item;
             this.clientHandler = c;
+            this.jsonData = jsonData.Value<JObject>("album");
         }
+
         private void Form2_Load(object sender, EventArgs e)
         {
-            this.clientHandler.GetCoverImage(this.item.GetJson().Value<JObject>("album").Value<String>("coverImage"));
-            pictureBox1.Image = Image.FromFile(this.cachePath + "\\temp.jpg");
-            File.Delete(this.cachePath + "\\temp.jpg");
+            String path = clientHandler.GetCoverImage(this.jsonData.Value<String>("coverImage"));
+            pictureBox1.ImageLocation = this.CACHE_DIR + "\\" + path;
+            pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
+            
+            
         }
-        
     }
 }

@@ -1,8 +1,8 @@
-import base64
 import json
 import os
 import socket
 import threading
+import base64
 
 import search_engine
 
@@ -12,7 +12,7 @@ class ServerWorker(threading.Thread):
     SONG_DIR = "files_matadata\\song_matadata"
     ARTIST_DIR = "files_matadata\\artist_matadata"
     ALBUM_DIR = "files_matadata\\album_matadata"
-    COVERIMAGE_DIR = "files_matadata\\cover_image"
+    COVER_IMAGE_DIR = "files_matadata\\cover_image"
 
     def __init__(self, client_socket):
         """
@@ -25,14 +25,20 @@ class ServerWorker(threading.Thread):
 
     def run(self):
         request = self.recv_json_request()
+        print(request)
         if self.check_data(request):
             if request["endpoint"] == "search":
                 self.handle_search(request)
             elif request["endpoint"] == "info":
                 self.handle_info(request)
             elif request["endpoint"] == "coverImage":
-                response = self.get_cover_image(request["q"])
-                self.send_response(response)
+                data = self.get_cover_image(request["q"])
+                self.send_response(data)
+
+    def get_cover_image(self, image_id):
+        if os.path.isfile(self.COVER_IMAGE_DIR + "\\" + image_id):
+            with open(self.COVER_IMAGE_DIR + "\\" + image_id, "rb") as f:
+                return f.read()
 
     def handle_info(self, request):
         """
@@ -70,14 +76,6 @@ class ServerWorker(threading.Thread):
             search_song = search_engine.SearchEngine(request["q"], self.get_song_id_list(), "song").search()
             self.send_json_response(
                 {"song": search_song, "artist": search_artist, "album": search_album})
-
-    def get_cover_image(self, cover_image_id):
-        print(self.COVERIMAGE_DIR + "\\" + cover_image_id)
-        if os.path.isfile(self.COVERIMAGE_DIR + "\\" + cover_image_id):
-            with open(self.COVERIMAGE_DIR + "\\" + cover_image_id, "rb") as f:
-                return base64.b64encode(f.read())
-        else:
-            return {"error": "not found", "code": "404"}
 
     def get_album_by_id(self, album_id):
         if os.path.exists(self.ALBUM_DIR + "\\" + album_id + ".json"):
@@ -130,15 +128,15 @@ class ServerWorker(threading.Thread):
         """
         self.client_socket.send(json.dumps(response).encode())
 
+    def send_response(self, response):
+        self.client_socket.send(response)
+
     def recv_json_request(self):
         """
         recv a request and encode it as a json and return it
         :return response: dict
         """
         return json.loads(self.client_socket.recv(self.SOCKET_BUFFER))
-
-    def send_response(self, response):
-        self.client_socket.send(response)
 
     @staticmethod
     def check_data(request):

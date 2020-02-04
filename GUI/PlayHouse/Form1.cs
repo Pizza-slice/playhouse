@@ -49,7 +49,6 @@ namespace PlayHouse
            foreach(PlayableItem item in itemList)
             {
                 allList.Items.Add(item.GetName());
-                Console.WriteLine(item.GetType());
                 if (item.GetType().Equals("album"))
                 {
                     album_list.Items.Add(item.GetName());
@@ -99,22 +98,18 @@ namespace PlayHouse
         
         private void all_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (allList.SelectedItem != null)
+            string text = allList.GetItemText(allList.SelectedItem);
+            PlayableItem item = this.GetItemByName(text);
+            if (item.type.Equals("album"))
             {
-                String ItemName = allList.GetItemText(allList.SelectedItem);
-                PlayableItem selectItem = this.GetItemByName(ItemName);
-                if (selectItem.GetType().Equals("album"))
-                {
-                    Form2 form2 = new Form2(selectItem, this.clientHandler);
-                    form2.ShowDialog();
-                    this.Close();
-                }
+                Form2 album = new Form2(this.clientHandler, item.GetJson());
+                album.ShowDialog();
             }
         }
 
         private void song_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            String text = allList.GetItemText(allList.SelectedItem);
+            
         }
         private void artist_list_SelectedIndexChanged(object sender, EventArgs e)
         {

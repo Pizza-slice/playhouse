@@ -9,8 +9,8 @@ namespace PlayHouse
 {
     public class PlayableItem
     {
-        private String id;
-        private String type;
+        public String id;
+        public String type;
         private JObject json;
         public PlayableItem(String Id, String type,JObject json)
         {

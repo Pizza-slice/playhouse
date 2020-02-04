@@ -1,4 +1,3 @@
-import base64
 import json
 import socket
 import sys
@@ -9,7 +8,7 @@ class Client:
     SOCKET_BUFFER = 1024
 
     def __init__(self):
-        self.gui_socket = socket.socket
+        pass
 
     def create_connection(self):
         client_socket = socket.socket()
@@ -27,10 +26,16 @@ class Client:
         client_socket.close()
         return json_response
 
-    def recv_response(self, client_socket):
-        data = client_socket.recv(self.SOCKET_BUFFER)
-        client_socket.close()
-        return data
+    def recv_response(self, client_socket, repite=False):
+        if not repite:
+            data = client_socket.recv(self.SOCKET_BUFFER)
+            client_socket.close()
+            return data
+        else:
+            data = client_socket.recv(self.SOCKET_BUFFER)
+            while len(data) % self.SOCKET_BUFFER == 0:
+                data += client_socket.recv(self.SOCKET_BUFFER)
+            return data
 
     def get_album_by_id(self, album_id):
         request = {"endpoint": "info", "type": "album", "album_id": album_id}
@@ -74,14 +79,16 @@ class Client:
         response = self.recv_json_response(client_socket)
         return response
 
-    def send_coverImage_query(self, query):
-        request = {"endpoint": "coverImage", "q": query}
+    def send_cover_image_request(self, cover_image_id):
+        request = {"endpoint": "coverImage", "q": cover_image_id}
         client_socket = self.send_json_request(request)
-        response = self.recv_response(client_socket)
+        response = self.recv_response(client_socket, repite=True)
         return response
 
 
 class GuiConnector:
+    CACHE_DIR = "cache"
+
     def __init__(self):
         self.client = Client()
         self.gui_server_socket = socket.socket()
@@ -111,21 +118,11 @@ class GuiConnector:
     def send_data(self, massage):
         self.gui_socket.send(massage)
 
-    def send_image(self, data):
-        counter = 0
-        for i in range(int(len(data) / 1024)):
-            self.send_data(data[counter:counter + 1024])
-            counter += 1024
-        if data % 1024 != 0:
-            self.send_data(data[counter:])
-
     def run(self):
         while True:
             request = json.loads(self.recv_data())
             if request["endpoint"] == "search":
                 self.handle_search(request)
-            elif request["endpoint"] == "coverImage":
-                self.handle_coverImage(request)
             elif request["endpoint"] == "album":
                 server_response = self.client.get_album_by_id(request["q"])
                 self.send_json_data(server_response)
@@ -135,16 +132,12 @@ class GuiConnector:
             elif request["endpoint"] == "artist":
                 server_response = self.client.get_artist_by_id(request["q"])
                 self.send_json_data(server_response)
-
-    def handle_coverImage(self, request):
-        server_response = self.client.send_coverImage_query(request["q"])
-        self.send_json_data({"data_length": len(base64.b64decode(server_response))})
-        print("lo")
-        data = self.recv_data()
-        print(data)
-        if data.decode() == "OK":
-            print("ya")
-            self.send_image(base64.b64decode(server_response))
+            elif request["endpoint"] == "coverImage":
+                server_response = self.client.send_cover_image_request(request["q"])
+                with open(self.CACHE_DIR + "\\" + request["q"], "wb+") as f:
+                    f.write(server_response)
+                print("lol")
+                self.send_json_data({"path": self.CACHE_DIR + "\\" + request["q"]})
 
     def handle_search(self, request):
         if request["type"] == "album":
