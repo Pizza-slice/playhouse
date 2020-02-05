@@ -117,7 +117,10 @@ namespace PlayHouse
         }
         private void album_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            string text = allList.GetItemText(allList.SelectedItem);
+            PlayableItem item = this.GetItemByName(text);
+            Form2 album = new Form2(this.clientHandler, item.GetJson());
+            album.ShowDialog();
         }
         private void all_result_click(object sender, EventArgs e)
         {

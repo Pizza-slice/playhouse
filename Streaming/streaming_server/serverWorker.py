@@ -1,8 +1,9 @@
-import socket
 import threading
 import time
+import socket
 from audioStream import AudioSteam
-from transmission_packet import TransmissionPacket
+from transmission_packet import RequestTransmissionPacket
+from transmission_packet import ResponseTransmissionPacket
 
 
 class ServerWorker(threading.Thread):
@@ -15,6 +16,10 @@ class ServerWorker(threading.Thread):
     END_TRANSMISSION = "$$END_TRANSMISSION$$"
 
     def __init__(self, client_socket, client_address):
+        """
+        :param client_socket:
+        :param client_address:
+        """
         super(ServerWorker, self).__init__()
         self.client_info["client_socket"] = client_socket
         self.client_info["client_address"] = client_address[0]
@@ -24,12 +29,14 @@ class ServerWorker(threading.Thread):
         self.teardown = False
 
     def run(self):
-
         while True:
-            transmission_packet = TransmissionPacket().encode(self.client_info["client_socket"].recv(1024).decode())
+            transmission_packet = RequestTransmissionPacket().encode(
+                self.client_info["client_socket"].recv(1024).decode())
             if transmission_packet.request_type == self.SETUP:
                 self.teardown = False
                 self.client_info["audioStream"] = AudioSteam(transmission_packet.filename)
+                response_packet = ResponseTransmissionPacket(self.client_info["audioStream"])
+                self.client_info["client_socket"].send(response_packet.encode())
                 threading.Thread(target=self.send_stream, args=(transmission_packet.udp_port,)).start()
             elif transmission_packet.request_type == self.PAUSE:
                 self.playing_event.clear()

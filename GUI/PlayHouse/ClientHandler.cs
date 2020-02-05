@@ -23,7 +23,7 @@ namespace PlayHouse
             json_request["endpoint"] = "search";
             json_request["q"] = query;
             json_request["type"] = type;
-            c.Send(JsonConvert.SerializeObject(json_request));
+            this.c.Send(JsonConvert.SerializeObject(json_request));
             String json_response = c.Recv(1024);
             return JsonConvert.DeserializeObject<JObject>(json_response);
         }
@@ -32,19 +32,27 @@ namespace PlayHouse
             Dictionary<string, string> json_request = new Dictionary<string, string>();
             json_request["endpoint"] = type;
             json_request["q"] = id;
-            c.Send(JsonConvert.SerializeObject(json_request));
+            this.c.Send(JsonConvert.SerializeObject(json_request));
             String json_response = c.Recv(1024);
             return JsonConvert.DeserializeObject<JObject>(json_response);
         }
         public String GetCoverImage(String coverImageId)
         {
+            String basePath = @"C:\projects\playhouse\API\api_client\";
             Dictionary<string, string> json_request = new Dictionary<string, string>();
             json_request["endpoint"] = "coverImage";
             json_request["q"] = coverImageId;
-            c.Send(JsonConvert.SerializeObject(json_request));
+            this.c.Send(JsonConvert.SerializeObject(json_request));
             String json_response = c.Recv(1024);
             Console.WriteLine(json_response);
-            return JsonConvert.DeserializeObject<JObject>(json_response).Value<String>("path");
+            return basePath + JsonConvert.DeserializeObject<JObject>(json_response).Value<String>("path");
+        }
+        public void StartStreaming(String streamingId)
+        {
+            Dictionary<string, string> json_request = new Dictionary<string, string>();
+            json_request["endpoint"] = "streaming";
+            json_request["q"] = streamingId;
+            this.c.Send(JsonConvert.SerializeObject(json_request));
         }
     }
 }

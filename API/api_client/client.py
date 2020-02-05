@@ -1,6 +1,9 @@
 import json
+import os.path
 import socket
 import sys
+
+import streaming_client.clientstream
 
 
 class Client:
@@ -8,7 +11,8 @@ class Client:
     SOCKET_BUFFER = 1024
 
     def __init__(self):
-        pass
+        self.streaming_client = streaming_client.clientstream.StreamClient()
+        self.streaming_client.main_loop()
 
     def create_connection(self):
         client_socket = socket.socket()
@@ -92,6 +96,7 @@ class GuiConnector:
     def __init__(self):
         self.client = Client()
         self.gui_server_socket = socket.socket()
+        print("listening on port " + sys.argv[1])
         try:
             self.gui_server_socket.bind(("", int(sys.argv[1])))
         except IndexError:
@@ -134,10 +139,12 @@ class GuiConnector:
                 self.send_json_data(server_response)
             elif request["endpoint"] == "coverImage":
                 server_response = self.client.send_cover_image_request(request["q"])
-                with open(self.CACHE_DIR + "\\" + request["q"], "wb+") as f:
-                    f.write(server_response)
-                print("lol")
+                if not os.path.isfile(self.CACHE_DIR + "\\" + request["q"]):
+                    with open(self.CACHE_DIR + "\\" + request["q"], "wb") as f:
+                        f.write(server_response)
                 self.send_json_data({"path": self.CACHE_DIR + "\\" + request["q"]})
+            elif request["endpoint"] == "streaming":
+                self.client.streaming_client.song_list.append(request["q"])
 
     def handle_search(self, request):
         if request["type"] == "album":

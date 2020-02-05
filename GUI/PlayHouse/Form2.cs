@@ -16,22 +16,55 @@ namespace PlayHouse
     {
         private ClientHandler clientHandler;
         private JObject jsonData;
-        private String CACHE_DIR = @"D:\Users\User\playhouse\API\api_client";
+        private List<Song> songList;
 
         public Form2(ClientHandler c, JObject jsonData)
         {
             InitializeComponent();
             this.clientHandler = c;
             this.jsonData = jsonData.Value<JObject>("album");
+            this.songList = new List<Song>();
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
             String path = clientHandler.GetCoverImage(this.jsonData.Value<String>("coverImage"));
-            pictureBox1.ImageLocation = this.CACHE_DIR + "\\" + path;
-            pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;
-            
-            
+            pictureBox1.Image = Image.FromFile(path);
+            foreach(String id in this.jsonData.Value<JArray>("song_list").ToObject<List<String>>())
+            {
+                this.songList.Add(new Song(id, this.clientHandler));
+            }
+            listBox1.Items.AddRange(songList.Select(c => c.GetName()).ToArray());
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            String name = listBox1.GetItemText(listBox1.SelectedItem);
+            Song song = this.songList.Find(songs => songs.GetName().Equals(name));
+            this.clientHandler.StartStreaming(song.GetStreamingId());
+        }
+    }
+    class Song
+    {
+        private String id;
+        private JObject jsonData;
+        public Song(String id, JObject jsonData)
+        {
+            this.id = id;
+            this.jsonData = jsonData.Value<JObject>("song");
+        }
+        public Song(String id, ClientHandler c)
+        {
+            this.id = id;
+            this.jsonData = c.GetJsonById(this.id, "song").Value<JObject>("song");
+        }
+        public String GetName()
+        {
+            return this.jsonData.Value<String>("name");
+        }
+        public String GetStreamingId()
+        {
+            return this.jsonData.Value<String>("streaming_id");
         }
     }
 }

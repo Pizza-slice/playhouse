@@ -25,7 +25,6 @@ class ServerWorker(threading.Thread):
 
     def run(self):
         request = self.recv_json_request()
-        print(request)
         if self.check_data(request):
             if request["endpoint"] == "search":
                 self.handle_search(request)

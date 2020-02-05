@@ -12,8 +12,8 @@ namespace PlayHouse
         private Socket ClientSocket;
         public ClientConnection()
         {
-            int port = this.StartClient();
-            //int port = 3000;
+            //int port = this.StartClient();
+            int port = 3000;
             Console.WriteLine(port);
             IPAddress ipAddr = IPAddress.Parse("127.0.0.1");
             IPEndPoint localEndPoint = new IPEndPoint(ipAddr, port);
@@ -23,9 +23,9 @@ namespace PlayHouse
         int StartClient()
         {
             System.Diagnostics.Process p = new System.Diagnostics.Process();
-            p.StartInfo.FileName = @"C:\cyber\anaconda3\python.exe";
+            p.StartInfo.FileName = @"C:\Users\Pizza-Slice\AppData\Local\Programs\Python\Python37\python.exe";
             String port = this.GenerentePort();
-            p.StartInfo.Arguments = @"D:\Users\User\playhouse\API\api_client\client.py " + port;
+            p.StartInfo.Arguments = @"C:\projects\playhouse\API\api_client\client.py " + port;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.RedirectStandardOutput = false;
             p.Start();
