@@ -17,6 +17,7 @@ class StreamClient:
         self.done = False
         self.teardown = False
         self.is_pause = False
+        self.is_playing = False
         self.is_finish_playing = threading.Event()
         self.is_finish_playing.set()
         self.song_list = []
@@ -44,6 +45,8 @@ class StreamClient:
         self.transmission_socket.send(teardown_packet.encode())
         self.done = True
         self.teardown = True
+        self.is_playing = False
+        self.is_finish_playing.set()
 
     def send_pause_massage(self):
         pause_packet = "PAUSE " + "\n" + str(self.get_transmission_seq())
@@ -84,11 +87,13 @@ class StreamClient:
                         channels=int(channels),
                         rate=int(rate),
                         output=True)
+        self.is_playing = True
         while not self.done:
             if self.frame_list:
                 self.lock.acquire()
                 stream.write(self.frame_list.pop(0))
                 self.lock.release()
+        self.is_playing = False
         self.is_finish_playing.set()
 
     @staticmethod

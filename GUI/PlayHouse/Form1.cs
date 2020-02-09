@@ -48,7 +48,7 @@ namespace PlayHouse
         {
            foreach(PlayableItem item in itemList)
             {
-                allList.Items.Add(item.GetName());
+                allList.Items.Add(item.GetName()+"- "+item.GetType());
                 if (item.GetType().Equals("album"))
                 {
                     album_list.Items.Add(item.GetName());
@@ -98,7 +98,7 @@ namespace PlayHouse
         
         private void all_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string text = allList.GetItemText(allList.SelectedItem);
+            string text = allList.GetItemText(allList.SelectedItem).Split('-')[0];
             PlayableItem item = this.GetItemByName(text);
             if (item.type.Equals("album"))
             {

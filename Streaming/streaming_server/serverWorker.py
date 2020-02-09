@@ -56,7 +56,8 @@ class ServerWorker(threading.Thread):
             sound_data = self.client_info["audioStream"].get_next_frame()
             stream_socket.sendto(sound_data, client_address)
             time.sleep(self.TIMER)
-        time.sleep(0.1)
-        stream_socket.sendto("$$END_TRANSMISSION$$".encode(), client_address)
+        if not self.teardown:
+            time.sleep(0.1)
+            stream_socket.sendto("$$END_TRANSMISSION$$".encode(), client_address)
         stream_socket.close()
         self.client_info["audioStream"].file.close()

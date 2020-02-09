@@ -144,7 +144,11 @@ class GuiConnector:
                         f.write(server_response)
                 self.send_json_data({"path": self.CACHE_DIR + "\\" + request["q"]})
             elif request["endpoint"] == "streaming":
-                self.client.streaming_client.song_list.append(request["q"])
+                if not self.client.streaming_client.is_playing:
+                    self.client.streaming_client.song_list.append(request["q"])
+                else:
+                    self.client.streaming_client.send_teardown_massage()
+                    self.client.streaming_client.song_list.append(request["q"])
 
     def handle_search(self, request):
         if request["type"] == "album":
