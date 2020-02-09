@@ -28,6 +28,8 @@ namespace PlayHouse
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            label1.Text = this.jsonData.Value<String>("name");
+            label3.Text = this.clientHandler.GetJsonById(this.jsonData.Value<String>("artist"), "artist").Value<JObject>("artist").Value<String>("name");
             String path = clientHandler.GetCoverImage(this.jsonData.Value<String>("coverImage"));
             pictureBox1.Image = Image.FromFile(path);
             foreach(String id in this.jsonData.Value<JArray>("song_list").ToObject<List<String>>())

@@ -38,7 +38,7 @@ namespace PlayHouse
         }
         public String GetCoverImage(String coverImageId)
         {
-            String basePath = @"C:\projects\playhouse\API\api_client\";
+            String basePath = @"D:\Users\User\Playhouse\API\api_client\";
             Dictionary<string, string> json_request = new Dictionary<string, string>();
             json_request["endpoint"] = "coverImage";
             json_request["q"] = coverImageId;
