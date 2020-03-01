@@ -22,3 +22,4 @@ D:\Users\User\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Form2.resources
 C:\projects\playhouse\GUI\PlayHouse\bin\Debug\Newtonsoft.Json.xml
 C:\projects\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.Form2.resources
 C:\projects\playhouse\GUI\PlayHouse\obj\Debug\PlayHouse.csproj.CopyComplete
+D:\Users\User\Playhouse\GUI\PlayHouse\bin\Debug\Newtonsoft.Json.dll

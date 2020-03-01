@@ -6,7 +6,7 @@ response = requests.get("http://localhost:3000/authorize",params={"client_id":"7
 print(response)
 cookie = response["cookie"]
 has = hashlib.sha256(password.encode()).hexdigest()
-response = requests.post("localhost:3000/log_in/"+cookie , data={"username":username, "hashpassword":has }).json()
+response = requests.post("http://localhost:3000/log_in/"+cookie , data={"username":username, "hashpassword":has }).json()
 code = response["code"]
-response = requests.post("localhost:3000/api/token", data={"grant_type":"authorization_code", "code":code, "redirect_uri":"localhost:3635", "client_id":"75e94364aa12469082f0a43e611d034d", "client_secret":"66b789261f394818a6ad2446bc68ec58"}).json()
+response = requests.post("http://localhost:3000/api/token", data={"grant_type":"authorization_code", "code":code, "redirect_uri":"localhost:3635", "client_id":"75e94364aa12469082f0a43e611d034d", "client_secret":"66b789261f394818a6ad2446bc68ec58"}).json()
 print(response)

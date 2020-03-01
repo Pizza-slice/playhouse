@@ -34,7 +34,9 @@ app.post("/log_in/:cookie", (req, res) =>{
     {
         let user_id = check_login(req.body.username, req.body.hashpassword)
         if( user_id != ""){
-            let code = create_code(get_info_by_cookie(cookie, user_id));
+            json_data = get_info_by_cookie(cookie, user_id)
+            console.log(user_id)
+            let code = create_code(user_id);
             res.json({"code":code})
         }
         else{
@@ -160,18 +162,18 @@ function create_code(json_data, user_id){
     return temp_code;
 }
 
-function is_code_available(temp_code){
-    code_db.each("SELECT code FROM code_table", function(err, rows) {
-        rows.forEach((row) =>{
-            if(row.code == temp_code)
-                return false;
+async function is_code_available(temp_code){
+    rows = await select_sql(code_db, "SELECT code FROM code_table")
+    rows.forEach((row) =>{
+        if(row.code == temp_code)
+            return false;
         });
         return true;
-    });
 }
 function get_info_by_cookie(file_name){
     let rawdata = fs.readFileSync(`cookies\\${file_name}.json`);
     let json_data = JSON.parse(rawdata);
+    console.log(json_data)
     return json_data;
 }
 function isClientIdExsist(client_id) {
@@ -194,8 +196,6 @@ function create_cookie(req_query){
     if(req_query.scope != undefined){
         json_data["scope"] = req_query.scope;
     }
-    console.log(cookie);
-    console.log(json_data)
     fs.writeFile(`cookies\\${cookie}.json`, JSON.stringify(json_data), 'utf8', function (err) {
         console.log(err);
     });
@@ -211,13 +211,29 @@ function makeid(length) {
     }
     return result;
  }
- function check_login(username, hashpassword){
-    user_db.each("SELECT user_id, username, hashpassword FROM users", function(err, rows) {
-        rows.forEach((row) =>{
-            if(row.username == username && row.hashpassword == hashpassword)
-                return row.user_id;
+ async function check_login(username, hashpassword){
+    try {
+        const user_row = await select_sql(user_db, "SELECT * FROM users");
+        check_login = "";
+        user_row.forEach(row => {
+            if(row.username == username){
+                if(row.hashpassword == hashpassword){
+                    check_login = row.user_id;
+                }
+            }
         });
+        return check_login;
+    }catch(e){
+        console.log(e);
         return "";
-    });
+    }
+}
+function select_sql(db, command){
+    return new Promise((resolve, reject) => {
+      db.all(command, [], (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    })
 }
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

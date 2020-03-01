@@ -1,0 +1,13 @@
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.csprojAssemblyReference.cache
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.Form1.resources
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.Form2.resources
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.Properties.Resources.resources
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.csproj.GenerateResource.cache
+D:\Users\User\Playhouse\GUI\PlayHouse\bin\Release\PlayHouse.exe.config
+D:\Users\User\Playhouse\GUI\PlayHouse\bin\Release\PlayHouse.exe
+D:\Users\User\Playhouse\GUI\PlayHouse\bin\Release\PlayHouse.pdb
+D:\Users\User\Playhouse\GUI\PlayHouse\bin\Release\Newtonsoft.Json.dll
+D:\Users\User\Playhouse\GUI\PlayHouse\bin\Release\Newtonsoft.Json.xml
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.csproj.CopyComplete
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.exe
+D:\Users\User\Playhouse\GUI\PlayHouse\obj\Release\PlayHouse.pdb

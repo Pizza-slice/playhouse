@@ -25,16 +25,19 @@ class SearchEngine:
         result = []
         if self.item_list:
             for item in self.item_list:
-                ratio = jellyfish.jaro_winkler(self.search_query, item.name)
-                if ratio >= self.THRESHOLD:
-                    item.ratio = ratio
-                    result.append(item)
-            if result:
-                return [item.item_id for item in sorted(result, key=lambda x: x.ratio, reverse=True)]
+                if item:
+                    ratio = jellyfish.jaro_winkler(self.search_query, item.name)  # to do learn the jaro_winkler
+                    if ratio >= self.THRESHOLD:
+                        item.ratio = ratio
+                        result.append(item)
+                if result:
+                    return [item.item_id for item in sorted(result, key=lambda x: x.ratio, reverse=True)]
+                else:
+                    return []
             else:
-
                 return []
-        return []
+        else:
+            return []
 
 
 class Item:

@@ -103,6 +103,7 @@ class StreamClient:
         :param raw_response:
         :return:
         """
+        print(raw_response)
         spited_data_data = raw_response.split("\n")
         return spited_data_data[0], spited_data_data[1], spited_data_data[2]
 
