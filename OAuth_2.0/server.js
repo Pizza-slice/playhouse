@@ -28,14 +28,14 @@ app.get('/authorize', (req, res) => {
         res.json({"error":"client_id not found"});
     }
 });
-app.post("/log_in/:cookie", (req, res) =>{
+app.post("/log_in/:cookie", async (req, res) =>{
     let cookie = req.params.cookie;
     if (cookie != "")
     {
-        let user_id = check_login(req.body.username, req.body.hashpassword)
+        let user_id = await check_login(req.body.username, req.body.hashpassword)
+        console.log(user_id)
         if( user_id != ""){
             json_data = get_info_by_cookie(cookie, user_id)
-            console.log(user_id)
             let code = create_code(user_id);
             res.json({"code":code})
         }
@@ -148,12 +148,12 @@ function get_redirect_uri(code){
         return "";
     });
 }
-function create_code(json_data, user_id){
+async function create_code(json_data, user_id){
     let is_done = false;
     let temp_code = ""
     while(!is_done){
         temp_code = makeid(10);
-        if(is_code_available(temp_code))
+        if(await is_code_available(temp_code))
             is_done= true;
     }
     let stmt = code_db.prepare("INSERT INTO code_table VALUES (?,?,?,?,?)");
@@ -173,7 +173,6 @@ async function is_code_available(temp_code){
 function get_info_by_cookie(file_name){
     let rawdata = fs.readFileSync(`cookies\\${file_name}.json`);
     let json_data = JSON.parse(rawdata);
-    console.log(json_data)
     return json_data;
 }
 function isClientIdExsist(client_id) {
@@ -191,13 +190,15 @@ function check_redirect_uri(client_id, redirect_uri){
     return (app.redirect_uri ==redirect_uri)
 }
 function create_cookie(req_query){
+    console.log(req_query)
     let cookie = makeid(7);
     let json_data = {"client_id":req_query.client_id, "redirect_uri": req_query.redirect_uri, "scope":"non-paid-user"};
     if(req_query.scope != undefined){
         json_data["scope"] = req_query.scope;
     }
     fs.writeFile(`cookies\\${cookie}.json`, JSON.stringify(json_data), 'utf8', function (err) {
-        console.log(err);
+        if (err)
+            console.log(err);
     });
     return cookie;
 }
@@ -222,11 +223,11 @@ function makeid(length) {
                 }
             }
         });
-        return check_login;
+        
     }catch(e){
         console.log(e);
-        return "";
     }
+    return check_login;
 }
 function select_sql(db, command){
     return new Promise((resolve, reject) => {
